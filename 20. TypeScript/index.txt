@@ -81,3 +81,118 @@ const info2: FullInfo = { age: 123 };
 
 Обєкт підтипа може бути призначений змінній надтипа. Зворотнє не завжди можливо без приведення типів.
 
+
+-=-=-=-=-=- 4. Спеціальні типи -=-=-=-=-=-=-
+-=-=-=-=-=- ANY UNKNOWN NEVER VOID -=-=-=-=-=-=-
+
+ANY - просто виключає перевірку TS.
+
+UNKNOWN - я не знаю, що це, але щось є. unknown означає: тип є, але ми не знаємо який. TypeScript каже: "Я не впевнений, що там, тому будь обережний."
+Використовуємо unknown, коли отримуємо дані ззовні (наприклад, з API), і треба їх спочатку перевірити.
+
+NEVER - це ніколи не відбувається. never — це тип, який неможливо отримати.
+function throwError(message: string): never {
+  throw new Error(message); - Функція нічого не повертає і ніколи не дійде до кінця.
+}
+
+VOID - нічого не повертає. void зазвичай означає, що функція нічого не повертає (або повертає “нічого важливого”).
+let result = sayHello(); // result: void (тобто undefined)
+
+
+-=-=-=-=-=- 5. ІНТЕРФЕЙСИ І ТИПИ -=-=-=-=-=-=-
+
+Найчастіше використовується в TS. Між ними особливої різниці немає, що той що той, працює одинаково.
+
+Якщо описуємо обєкт або клас - тоді interface.
+Якщо описуємо щось складніше, (типи, юніони, функції, джейнеріки) - використовуємо type
+
+? знак питання ставиться, якщо якийсь тип є не обовязковим.
+
+interface Address {
+  city?: string;
+  street?: string;
+  coords: number[];
+}
+
+type User = {
+  firstname: string;
+  age?: number;
+  address: Address;
+}
+
+type ComponentProps = {
+  className: string;
+  color: 'red' | 'green';
+}
+
+type ApiResponse<T> = {
+  status: 'success' | 'error';
+  data?: T;
+}
+
+
+-=-=-=-=-=- 6. ЛІТЕРАЛИ -=-=-=-=-=-=-
+
+Це щось схоже, на оператор АБО.
+Внизу приклади, де може бути варіант, один з трьох.
+
+type Color = 'red' | 'green' | 'blue'
+type Size = 4 | 8 | 16
+
+* as const * каже TypeScript:
+“Не міняй ці значення, і не розширюй їх типи — запам’ятай їх такими, як вони є зараз.” 
+
+const colors = ["red", "green", "blue"];
+TypeScript подумає:
+string[] - Тобто: “масив рядків” — але які саме рядки, він не запам’ятав.
+
+const colors = ["red", "green", "blue"] as const;
+Тепер для TS тип виглядає ось так:
+readonly ["red", "green", "blue"]
+
+as const — каже TypeScript:
+“Трактуй це як константу з фіксованими значеннями, а не як просто змінну типу string чи number.”
+
+
+-=-=-=-=-=- 7. GENERICS -=-=-=-=-=-=-
+
+GENERICS - це як аргумент у функції, тільки це тип.
+
+<T> це від назви TYPE, там можна вказати будь яку назву.
+interface ApiResponse<T> {
+  status?: 'error' | 'success';
+  meta?: MetaData;
+  requestId?: string;
+  data: T; - Таким чином, ми вказуємо назву Джейнеріка і потім якщо потрібно, можемо підставити той тип, який нам потрібно, наприклад якщо в DATA у нас приходять різні данні.
+}
+
+const responseFromUserApi: ApiResponse<User> = {
+  data: {
+    username: 'Ivan'
+  }
+}
+const responseFromArticleApi: ApiResponse<Article> = {
+  data: {
+    title: '123'
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+-=-=-=-=-=- .  -=-=-=-=-=-=-
+
+
+
+
+
+-=-=-=-=-=- .  -=-=-=-=-=-=-
